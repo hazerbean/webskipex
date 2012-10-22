@@ -1,6 +1,28 @@
-/* Simple UL rule to put a grey bar */
-/* to the left of unordered lists.   */
+/* Simple UL rule to put a grey bar to the left of unordered lists.   */
 ul {
 	border-left: #CCC 1ex solid;
 	min-height: 1em;
+	list-style: none;
+	margin: 0;
+	padding: 0.5ex 1em;
+}
+
+/* Selects any element that has the draggable attribute */
+[draggable] {
+	padding: 0.2ex 0.2em;
+	margin: 0;
+	border-radius: 0.3ex;
+	display: inline-block;
+	border: solid transparent thin;
+}
+
+/* Selects any element that is being dragged */
+:active[draggable] {
+	background: #FFC;
+	border-color: red ;
+}
+
+/* Selects the target of any drag operation (via a bit of JS to change the class) */
+.dragtarget {
+	border-color: red;
 }

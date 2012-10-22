@@ -7,7 +7,104 @@ var rdfx = rdfx || {};
 rdfx.dragger = (function () {
 	'use strict';
 
-	var ensure_path_with_parent, ensure_path, paths_loaded, loaded;
+	// all variables used within this function are declared here.
+	var drag_over,
+		drag_start,
+		drag_enter,
+		drag_leave,
+		drop,
+		make_drop_zone,
+		make_draggable,
+		ensure_path_with_parent,
+		ensure_path,
+		paths_loaded,
+		loaded;
+
+	// this MUST return false in order for an element
+	// to be able to accept dragged and dropped items
+	// bizarre but true: e.g. http://goo.gl/30e6U
+	drag_over = function (ev) {
+		ev.preventDefault();
+		return false;
+	};
+
+	// use the start of a drag to grab the ID
+	// of the thing that's being dragged (so it can
+	// be used later to get a handle on the element
+	// to move)
+	drag_start = function (ev) {
+		ev.dataTransfer.setData("string:text/x-rdfx", ev.target.parentElement.id);
+	};
+
+	// update the CSS of an element that is the
+	// target of an ongoing drag
+	drag_enter = function (ev) {
+		ev.target.classList.add("dragtarget");
+	};
+
+	// update the CSS of an element that was
+	// previously dragged over
+	drag_leave = function (ev) {
+		ev.target.classList.remove("dragtarget");
+	};
+
+	// handles dropping of one element on another
+	// works out where the element should be moved
+	// to and adjusts the Document Object Model (DOM) accordingly
+	drop = function (ev) {
+
+		var data, elem, target, ul;
+
+		// get the ID of the element to be moved
+		data = ev.dataTransfer.getData("string:text/x-rdfx");
+		elem = document.getElementById(data);
+
+		// get a handle where the drop occurred
+		target = ev.target;
+
+		if (target.nodeName === "LI") {
+			// if the drop occurred on an LI, then the
+			// dropped item should be added to its sublist
+			target = target.querySelector("ul");
+			target.insertBefore(elem, target.firstChild);
+		} else {
+			if (target.nodeName === "SPAN") {
+				// if the drop occurred on a SPAN, then the
+				// dropped item should be added to its
+				// parent UL (i.e. they become siblings)
+				ul = target.parentElement.parentElement;
+				ul.insertBefore(elem, target.parentElement);
+			} else {
+				// we assume it's already in the UL
+				target.appendChild(elem);
+			}
+		}
+
+		// ensure the target is no longer highlighted
+		ev.target.classList.remove("dragtarget");
+
+		// exit, ensuring the detailt is canceled so
+		// its clear the drop has been handled.
+		ev.preventDefault();
+		return false;
+	};
+
+
+	// Adds the listeners necessary for an element to react when
+	// when objects are dragged over or dropped on them
+	make_drop_zone = function (elem) {
+		elem.addEventListener("drop", drop, false);
+		elem.addEventListener("dragover", drag_over, false);
+		elem.addEventListener("dragenter", drag_enter, false);
+		elem.addEventListener("dragleave", drag_leave, false);
+	};
+
+
+	// Adds any listeners necessary for an element to be draggable
+	make_draggable = function (elem) {
+		elem.addEventListener("dragstart", drag_start, false);
+	};
+
 
 	// recursive function that takes a path_array (of strings) and
 	// ensures that each of its element strings exist as a chain of
@@ -15,6 +112,9 @@ rdfx.dragger = (function () {
 	// exist are not replaced.
 	ensure_path_with_parent = function (prefix, path_array, parent) {
 		var id, elem, ul, li, span;
+
+		// any parent should be able to receive drops
+		make_drop_zone(parent);
 
 		// take the head of the path_array
 		id = path_array.shift();
@@ -50,6 +150,10 @@ rdfx.dragger = (function () {
 				parent.appendChild(li);
 				li.appendChild(span);
 				li.appendChild(ul);
+
+				// a new element has been created so
+				// attach the drag listeners
+				make_draggable(span);
 
 				// recurse
 				ensure_path_with_parent(prefix, path_array, ul);
