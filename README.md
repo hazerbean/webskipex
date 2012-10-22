@@ -22,6 +22,18 @@ It's necessarily rough-and-ready.  Customer work is so very rarely
 a green-field building expereince, and this unit aims to provide a
 level of realism.
 
+Back-to-Front
+-------------
+It is worth pointing out that despite the aim for realism, this is a
+solution to a problem that has already been solved many times, and a
+solution that is designed it backwards: i.e. it is a tool to introduce
+JavaScript, PHP and MySQL concepts.  These concepts are discussed in the
+lectures.  Hopefully the milestones and the order of checkins will provide
+some insight, but they need to be taken twice daily with the lecture
+content to make sense.  In summary, a real world solution would look 
+different because we have an unwritten requirement of communicating how
+and why each stage works.
+
 Notes
 -----
 When possible, before being pushed here:
@@ -29,10 +41,11 @@ When possible, before being pushed here:
 * HTML should be valid (HTML5)
 * CSS should be valid (CSS level 3)
 * JavaScript should:
- * work (i.e. nothing is funamentally broken and stubs are used for capabilities that are in-development)
+ * work (i.e. nothing is funamentally broken and stubs are used 
+   for capabilities that are in-development)
  * give no errors in the console
  * give no errors in jslint.com (with browser assumed and console allowed)
 
-You should adopt a similar approach to managing your own work: by regularly 
-checking its validity and operational capability you'll write better code
-in the first place.
+Students are encouraged to adopt a similar approach to managing 
+their work.  Rregularly checking code validity and operational 
+capability results in writing better code from the outset.
