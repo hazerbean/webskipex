@@ -1,0 +1,6 @@
+/* Simple UL rule to put a grey bar */
+/* to the left of unordered lists.   */
+ul {
+	border-left: #CCC 1ex solid;
+	min-height: 1em;
+}
